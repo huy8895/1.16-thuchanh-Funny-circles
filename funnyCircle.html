@@ -5,15 +5,11 @@
     <title>Funny circle</title>
 </head>
 <body>
-<canvas id="myCanvas" width="1368px" height="768px" style="border:1px solid #d3d3d3;"></canvas>
+<canvas id="myCanvas" width="1500" height="1000px" style="border:1px solid #d3d3d3;"></canvas>
 
 
 <script>
-    function Circle(x, y, radius){
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-    }
+    let canvas =  document.getElementById('myCanvas');
 
     function getRandomHex(){
         return Math.floor(Math.random()*255);
@@ -26,26 +22,42 @@
         return "rgb(" + red + "," + blue + "," + green +")";
     }
 
-    function createCircle(){
-        var ctx = document.getElementById("myCanvas").getContext("2d");
-        var radius = Math.floor(Math.random() * 80);
-        var color = getRandomColor();
-        var x = Math.random() * window.innerWidth;
-        var y = Math.random() * window.innerHeight;
-        var circle= new Circle(x, y, radius);
-        ctx.beginPath();
-        ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = color;
-        ctx.fill();
-    }
+    let circle = {
 
-    function createMultipleCircle(){
-        for(var i = 0; i < 30; i++){
-            createCircle();
+        r : Math.floor(Math.random() * 80),
+        x : Math.random() * window.innerWidth,
+        y : Math.random() * window.innerHeight,
+        vx : 6,
+        vy : 10,
+
+    }
+    let c = document.getElementById('myCanvas').getContext('2d')
+    let circles = [{x:400,y:400,r:50,color:25,vx:6,vy:10}];
+
+    function draw(){
+        let color = getRandomColor();
+        c.fillStyle = 'white';
+        c.fillRect(0,0,window.innerWidth,window.innerHeight);
+        for(var i=0; i <circles.length; i++){
+            c.fillStyle = color;
+            c.beginPath();
+            c.arc(circles[i].x,circles[i].y,circles[i].r,0,2*Math.PI,false);
+            c.fill();
+
+            if((circles[i].x /*+ circles[i].vx*/ + circles[i].r > window.innerWidth) || (circles[i].x - circles[i].r /*+ circles[i].vx */< 0)){
+                circles[i].vx = - circles[i].vx;
+            }
+            if((circles[i].y /*+ circles[i].vy*/ + circles[i].r >  window.innerHeight) || (circles[i].y - circles[i].r /*+ circles[i].vy */< 0)){
+                circles[i].vy = - circles[i].vy;
+            }
+            circles[i].x +=circles[i].vx;
+            circles[i].y +=circles[i].vy;
         }
+        cancelMe = requestAnimationFrame(draw);
     }
+    requestAnimationFrame(draw)
 
-    createMultipleCircle();
+
 
 
 
